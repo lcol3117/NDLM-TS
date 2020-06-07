@@ -20,7 +20,7 @@ function getClosestIndex(i: number[], data: Array<Array<number>>): number {
   return options.indexOf(closestD)
 }
 
-function getClosestPoint(i: number[], data: Array<Array<number>>): number {
+function getClosestPoint(i: number[], data: Array<Array<number>>): number[] {
   const options: number[] = data.map(x => l2distNotSelf(i, x))
 	const closestD: number = options.reduce((a, b) => Math.min(a,b))
   return data[options.indexOf(closestD)]
@@ -48,7 +48,7 @@ function medianLeft(values: number[]): number {
 	return lowMiddle
 }
 
-function getNDTransform(data: Array<Array<Number>>): number[] {
+function getNDTransform(data: Array<Array<number>>): number[] {
   return data.map(x => getClosestD(x,data))
 }
 
@@ -71,8 +71,8 @@ function crossing(a: number[], b: number[], ndt: number[], data: Array<Array<num
 
 function sameCluster(a: number[], b: number[], ndt: number[], data: Array<Array<number>>, eta: number): boolean {
   const [altA, altB]: Array<Array<number>> = [a, b].map(x => getClosestPoint(x, data))
-  const options: Array<Array<Array<Number>>> = [[a, b], [altA, b], [a, altB], [altA, altB]]
+  const options: Array<Array<Array<number>>> = [[a, b], [altA, b], [a, altB], [altA, altB]]
   const crossings: boolean[] = options.map(x => crossing(x[0], x[1], ndt, data, eta))
-  const nCrossings: number[] = crossings.map(x => x?1:0)))
+  const nCrossings: number[] = crossings.map(x => x?1:0)
   return (medianLeft(nCrossings)) === 0
 }
