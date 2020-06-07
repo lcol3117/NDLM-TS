@@ -9,18 +9,18 @@ function l2dist(a: number[], b: number[]): number {
   return units.reduce((a, b) => a + b)
 }
 
-function getClosestD(i: number[], data: Array<Array<number>>): number {
+function getClosestD(i: number[], data: Array<number[]>): number {
 	const options: number[] = data.map(x => l2distNotSelf(i, x))
 	return options.reduce((a, b) => Math.min(a,b))
 }
 
-function getClosestIndex(i: number[], data: Array<Array<number>>): number {
+function getClosestIndex(i: number[], data: Array<number[]>): number {
   const options: number[] = data.map(x => l2distNotSelf(i, x))
 	const closestD: number = options.reduce((a, b) => Math.min(a,b))
   return options.indexOf(closestD)
 }
 
-function getClosestPoint(i: number[], data: Array<Array<number>>): number[] {
+function getClosestPoint(i: number[], data: Array<number[]>): number[] {
   const options: number[] = data.map(x => l2distNotSelf(i, x))
 	const closestD: number = options.reduce((a, b) => Math.min(a,b))
   return data[options.indexOf(closestD)]
@@ -48,7 +48,7 @@ function medianLeft(values: number[]): number {
 	return lowMiddle
 }
 
-function getNDTransform(data: Array<Array<number>>): number[] {
+function getNDTransform(data: Array<number[]>): number[] {
   return data.map(x => getClosestD(x,data))
 }
 
@@ -59,7 +59,7 @@ function alongLine(a: number[], b: number[], d: number): number[] {
   return r.map(x => a[x] + newDeltas[x])
 }
 
-function crossing(a: number[], b: number[], ndt: number[], data: Array<Array<number>>, eta: number): boolean {
+function crossing(a: number[], b: number[], ndt: number[], data: Array<number[]>, eta: number): boolean {
   const [aNDT, bNDT]: number[] = [a, b].map(x => ndt[data.indexOf(x)])
   const etaRange: number[] = range(1, eta - 1)
   const middleNDTs: number[] = etaRange.map(x => ndt[getClosestIndex(alongLine(a, b, x / eta), data)])
@@ -69,9 +69,9 @@ function crossing(a: number[], b: number[], ndt: number[], data: Array<Array<num
   return deltaMiddleNDT >= 1 / 3
 }
 
-function sameCluster(a: number[], b: number[], ndt: number[], data: Array<Array<number>>, eta: number): boolean {
-  const [altA, altB]: Array<Array<number>> = [a, b].map(x => getClosestPoint(x, data))
-  const options: Array<Array<Array<number>>> = [[a, b], [altA, b], [a, altB], [altA, altB]]
+function sameCluster(a: number[], b: number[], ndt: number[], data: Array<number[]>, eta: number): boolean {
+  const [altA, altB]: Array<number[]> = [a, b].map(x => getClosestPoint(x, data))
+  const options: Array<Array<number[]>> = [[a, b], [altA, b], [a, altB], [altA, altB]]
   const crossings: boolean[] = options.map(x => crossing(x[0], x[1], ndt, data, eta))
   const nCrossings: number[] = crossings.map(x => x?1:0)
   return (medianLeft(nCrossings)) === 0
